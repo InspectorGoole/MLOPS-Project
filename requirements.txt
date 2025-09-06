@@ -1,0 +1,15 @@
+pandas>=2.0,<3.0
+mlflow>=2.8,<3.0
+notebook>=7.0,<8.0
+numpy>=1.25,<2.0
+scikit-learn>=1.3,<2.0
+matplotlib>=3.7,<4.0
+python-box>=7.0,<8.0
+pyyaml>=6.0,<7.0
+tqdm>=4.65,<5.0
+ensure>=1.0,<2.0
+joblib>=1.3,<2.0
+types-pyyaml>=6.0,<7.0
+flask>=2.3,<3.0
+flask-cors>=4.0,<5.0
+-e .

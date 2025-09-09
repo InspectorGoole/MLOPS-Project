@@ -15,6 +15,7 @@ class DataTransformation:
         df = pd.read_csv(self.config.data_path)
         df = df.drop(columns=['customerID'])
         df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
+        df.dropna(subset=['TotalCharges'], inplace=True)
 
 # label encoding
         le = LabelEncoder()

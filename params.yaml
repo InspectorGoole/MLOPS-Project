@@ -1,1 +1,2 @@
-key: val
+LogisticRegression:
+  max_iter: 2500

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        h1 { font-size: 2em; }
+        .yes { color: red; font-weight: bold; }
+        .no { color: green; font-weight: bold; }
+        .container {
+            border: 2px solid #ccc;
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+            background: #f9f9f9;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prediction Result</h1>
+
+        {% if prediction == "Yes" %}
+            <p class="yes">⚠️ The customer is likely to CHURN.</p>
+        {% else %}
+            <p class="no">✅ The customer is NOT likely to churn.</p>
+        {% endif %}
+
+        <a href="/predict">🔙 Make Another Prediction</a>
+    </div>
+</body>
+</html>

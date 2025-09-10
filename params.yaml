@@ -1,2 +1,2 @@
 LogisticRegression:
-  max_iter: 2500
+  max_iter: 5000

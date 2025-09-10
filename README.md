@@ -11,3 +11,12 @@
 7. Update the pipeline
 8. Update the main.py
 9. Update app.py
+
+MLFLOW Dagshub URI:
+import dagshub
+dagshub.init(repo_owner='am6499057', repo_name='MLOPS-Project', mlflow=True)
+
+import mlflow
+with mlflow.start_run():
+mlflow.log_param('parameter name', 'value')
+mlflow.log_metric('metric name', 1)

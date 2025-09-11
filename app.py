@@ -189,4 +189,5 @@ def internal_error(error):
     return render_template('error.html', error="Internal server error occurred")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    # app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080)

@@ -1,4 +1,6 @@
-FROM python:3.12-slim-buster
+FROM python:3.12-slim-bookworm
+
+
 
 
 RUN apt update -y && apt install aws cli -y

@@ -1,10 +1,13 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.12-slim-buster
 
+
+RUN apt update -y && apt install aws cli -y
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app
 
-COPY . .
+RUN pip install -r requirements.txt 
 
 CMD ["python3", "app.py"]
+
+

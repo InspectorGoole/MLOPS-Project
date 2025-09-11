@@ -19,6 +19,44 @@ class DataPreprocessor:
             'PaperlessBilling': {'No': 0, 'Yes': 1}
         }
         
+        # Define ALL expected columns in the exact order from your training data
+        self.expected_columns = [
+            # Basic features (label encoded and numeric)
+            'gender', 'SeniorCitizen', 'Partner', 'Dependents', 'tenure', 
+            'PhoneService', 'PaperlessBilling', 'MonthlyCharges', 'TotalCharges',
+            
+            # MultipleLines one-hot encoded
+            'MultipleLines_No', 'MultipleLines_No phone service', 'MultipleLines_Yes',
+            
+            # InternetService one-hot encoded  
+            'InternetService_DSL', 'InternetService_Fiber optic', 'InternetService_No',
+            
+            # OnlineSecurity one-hot encoded
+            'OnlineSecurity_No', 'OnlineSecurity_No internet service', 'OnlineSecurity_Yes',
+            
+            # OnlineBackup one-hot encoded
+            'OnlineBackup_No', 'OnlineBackup_No internet service', 'OnlineBackup_Yes',
+            
+            # DeviceProtection one-hot encoded
+            'DeviceProtection_No', 'DeviceProtection_No internet service', 'DeviceProtection_Yes',
+            
+            # TechSupport one-hot encoded
+            'TechSupport_No', 'TechSupport_No internet service', 'TechSupport_Yes',
+            
+            # StreamingTV one-hot encoded
+            'StreamingTV_No', 'StreamingTV_No internet service', 'StreamingTV_Yes',
+            
+            # StreamingMovies one-hot encoded
+            'StreamingMovies_No', 'StreamingMovies_No internet service', 'StreamingMovies_Yes',
+            
+            # Contract one-hot encoded
+            'Contract_Month-to-month', 'Contract_One year', 'Contract_Two year',
+            
+            # PaymentMethod one-hot encoded
+            'PaymentMethod_Bank transfer (automatic)', 'PaymentMethod_Credit card (automatic)', 
+            'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check'
+        ]
+        
         # Define columns that get one-hot encoded
         self.onehot_columns = [
             'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup', 
@@ -36,8 +74,11 @@ class DataPreprocessor:
         
         # Handle TotalCharges - convert to numeric (same as training)
         df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
-        # Note: In training you dropped NaN rows, but for prediction we'll fill with 0
         df['TotalCharges'].fillna(0, inplace=True)
+        
+        # Convert to int64 as expected by model
+        df['TotalCharges'] = df['TotalCharges'].astype('int64')
+        df['MonthlyCharges'] = df['MonthlyCharges'].astype('int64')
         
         # Ensure SeniorCitizen is int
         df['SeniorCitizen'] = df['SeniorCitizen'].astype(int)
@@ -46,7 +87,7 @@ class DataPreprocessor:
         label_encode_cols = ['gender', 'Partner', 'Dependents', 'PhoneService', 'PaperlessBilling']
         for col in label_encode_cols:
             if col in df.columns:
-                df[col] = df[col].map(self.label_encodings[col])
+                df[col] = df[col].map(self.label_encodings[col]).astype(int)
         
         # Apply one-hot encoding (same as training)
         for col in self.onehot_columns:
@@ -58,7 +99,22 @@ class DataPreprocessor:
             if df[col].dtype == bool:
                 df[col] = df[col].astype(int)
         
-        return df
+        # Create a new DataFrame with ALL expected columns, filled with 0
+        final_df = pd.DataFrame(0, index=df.index, columns=self.expected_columns)
+        
+        # Fill in the values we have
+        for col in df.columns:
+            if col in self.expected_columns:
+                final_df[col] = df[col]
+        
+        # Ensure correct data types (float64 for most, int64 for charges)
+        for col in final_df.columns:
+            if col in ['MonthlyCharges', 'TotalCharges']:
+                final_df[col] = final_df[col].astype('int64')
+            else:
+                final_df[col] = final_df[col].astype('float64')
+        
+        return final_df
 
 # Initialize preprocessor
 preprocessor = DataPreprocessor()
@@ -117,6 +173,7 @@ def predict():
             
             return render_template('result.html', 
                                  prediction=int(result[0]),
+                                 risk_percentage=risk_percentage,
                                  customer_data=data)
 
         except Exception as e:
@@ -125,6 +182,8 @@ def predict():
 
     return render_template('predict.html')
 
+
+# Error handler
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('error.html', error="Internal server error occurred")

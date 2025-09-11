@@ -20,3 +20,7 @@ import mlflow
 with mlflow.start_run():
 mlflow.log_param('parameter name', 'value')
 mlflow.log_metric('metric name', 1)
+
+## ECR URI
+
+HERE: 509399622317.dkr.ecr.us-east-1.amazonaws.com/mlproj

@@ -1,6 +1,6 @@
 FROM python:3.12-slim-bookworm
 
-# Install system dependencies needed for scientific Python packages
+# System dependencies for numpy, pandas, scikit-learn, matplotlib
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -15,15 +15,16 @@ RUN apt-get update -y && \
 
 WORKDIR /app
 
-# Copy requirements file
+# Copy setup files and requirements first
+COPY setup.py .
 COPY requirements.txt .
+COPY src ./src
 
-# Install Python dependencies
+# Install Python dependencies (editable install will now succeed)
 RUN pip install --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy your project code
+# Copy the rest of the app
 COPY . .
 
-# Run the app
 CMD ["python3", "app.py"]
